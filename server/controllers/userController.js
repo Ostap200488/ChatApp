@@ -32,9 +32,12 @@ export const signup = async (req, res) => {
 
     const token = generateToken(newUser._id);
 
+    const safeUser = newUser.toObject();
+    delete safeUser.password;
+
     res.json({
       success: true,
-      userData: newUser,
+      userData: safeUser,
       token,
       message: "Account created successfully",
     });
@@ -71,17 +74,21 @@ export const login = async (req, res) => {
 
     const token = generateToken(userData._id);
 
-    
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "lax",
       secure: false, // true in production (https)
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    const safeUser = userData.toObject();
+    delete safeUser.password;
 
     res.json({
       success: true,
       message: "Login successfully",
+      token,
+      userData: safeUser,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
