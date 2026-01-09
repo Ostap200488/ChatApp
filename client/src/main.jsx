@@ -5,10 +5,10 @@ import  {BrowserRouter} from 'react-router-dom'
 import { AuthContext, AuthProvider } from '../context/AuthContext.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
+ <BrowserRouter>
   <AuthProvider>
-     <App />
+    <App />
   </AuthProvider>
-   </BrowserRouter>
-  ,
+</BrowserRouter>
+
 )
