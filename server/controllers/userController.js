@@ -51,7 +51,7 @@ export const login = async (req, res) => {
 
     const userData = await User.findOne({ email });
     if (!userData) {
-      return res.json({
+      return res.status(401).json({
         success: false,
         message: "Invalid credentials",
       });
@@ -63,7 +63,7 @@ export const login = async (req, res) => {
     );
 
     if (!isPasswordCorrect) {
-      return res.json({
+      return res.status(401).json({
         success: false,
         message: "Invalid credentials",
       });
@@ -71,14 +71,20 @@ export const login = async (req, res) => {
 
     const token = generateToken(userData._id);
 
+    
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false, // true in production (https)
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     res.json({
       success: true,
-      token,
-      message: "Login Successfully",
+      message: "Login successfully",
     });
   } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
