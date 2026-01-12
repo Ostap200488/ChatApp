@@ -67,25 +67,36 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  /* ======================
-     LOGOUT
-  ====================== */
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    setAuthUser(null);
-    setOnlineUsers([]);
-
-    delete axios.defaults.headers.common.Authorization;
-
+ /* ======================
+   LOGOUT (FIXED)
+====================== */
+const logout = async () => {
+  try {
+    // ✅ OPTIONAL but recommended
+    await axios.post("/api/auth/logout");
+  } catch (error) {
+    // Ignore backend logout errors
+  } finally {
+    // ✅ DISCONNECT SOCKET FIRST
     if (socket) {
       socket.disconnect();
       setSocket(null);
     }
 
+    // ✅ CLEAR AUTH STATE
+    localStorage.removeItem("token");
+    setToken(null);
+    setAuthUser(null);
+    setOnlineUsers([]);
+
+    // ✅ REMOVE AUTH HEADER
+    delete axios.defaults.headers.common.Authorization;
+
     toast.success("Logged out successfully");
     navigate("/login");
-  };
+  }
+};
+
 
   /* ======================
      UPDATE PROFILE
