@@ -17,8 +17,8 @@ const HomePage = () => {
     }`}>
 
 
-            <Sidebar selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
-            <ChatContainer selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+            <Sidebar  />
+            <ChatContainer  />
             <RightSidebar  selectedUser={selectedUser} setSelectedUser={setSelectedUser}/>
         </div>
     </div>

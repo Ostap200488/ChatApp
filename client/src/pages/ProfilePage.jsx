@@ -65,7 +65,7 @@ const ProfilePage = () => {
   }, [previewUrl]);
 
   /* ======================
-     SUBMIT HANDLER
+     SUBMIT HANDLER (FULLY FIXED)
   ====================== */
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,23 +86,21 @@ const ProfilePage = () => {
         return;
       }
 
-      // Image update (base64)
-      const reader = new FileReader();
+      // ✅ Properly await FileReader
+      const base64Image = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () =>
+          reject(new Error("Image reading failed"));
+        reader.readAsDataURL(selectedImg);
+      });
 
-      reader.onload = async () => {
-        await updateProfile({
-          ...payload,
-          profilePic: reader.result,
-        });
-        navigate("/");
-      };
+      await updateProfile({
+        ...payload,
+        profilePic: base64Image,
+      });
 
-      reader.onerror = () => {
-        console.error("Image reading failed");
-        alert("Failed to read image");
-      };
-
-      reader.readAsDataURL(selectedImg);
+      navigate("/");
     } catch (error) {
       console.error("Profile update failed:", error);
       alert("Profile update failed");
@@ -135,7 +133,9 @@ const ProfilePage = () => {
               id="avatar"
               accept=".png, .jpg, .jpeg"
               hidden
-              onChange={(e) => handleImageSelect(e.target.files[0])}
+              onChange={(e) =>
+                handleImageSelect(e.target.files[0])
+              }
             />
 
             <img
