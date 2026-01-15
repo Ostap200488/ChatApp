@@ -15,7 +15,6 @@ const ChatContainer = () => {
   } = useContext(ChatContext);
 
   const { authUser, onlineUsers } = useContext(AuthContext);
-
   const CURRENT_USER_ID = authUser?._id;
 
   const scrollEnd = useRef(null);
@@ -28,8 +27,10 @@ const ChatContainer = () => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    await sendMessage({ text: input.trim() });
-    setInput("");
+    try {
+      await sendMessage({ text: input.trim() });
+      setInput("");
+    } catch {}
   };
 
   /* ======================
@@ -44,32 +45,42 @@ const ChatContainer = () => {
     }
 
     const reader = new FileReader();
-
     reader.onloadend = async () => {
-      await sendMessage({ image: reader.result });
-      e.target.value = "";
+      try {
+        await sendMessage({ image: reader.result });
+        e.target.value = "";
+      } catch {}
     };
 
     reader.readAsDataURL(file);
   };
 
   /* ======================
-     LOAD MESSAGES
+     LOAD MESSAGES (FIXED)
   ====================== */
   useEffect(() => {
-    if (selectedUser) {
-      getMessages(selectedUser._id);
-    }
-  }, [selectedUser, getMessages]);
+    if (!selectedUser?._id) return;
+
+    // ✅ ONLY depends on ID
+    getMessages(selectedUser._id);
+  }, [selectedUser?._id]);
 
   /* ======================
      AUTO SCROLL
   ====================== */
   useEffect(() => {
-    if (scrollEnd.current) {
-      scrollEnd.current.scrollIntoView({ behavior: "smooth" });
-    }
+    scrollEnd.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  /* ======================
+     NORMALIZE MESSAGES
+  ====================== */
+  const safeMessages = messages
+    .filter(Boolean)
+    .map((msg) => ({
+      ...msg,
+      senderId: msg.senderId || msg.sender,
+    }));
 
   return selectedUser ? (
     <div className="h-full overflow-scroll relative backdrop-blur-lg">
@@ -99,12 +110,12 @@ const ChatContainer = () => {
 
       {/* ------ chat area ------ */}
       <div className="flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6">
-        {messages.map((msg, index) => {
+        {safeMessages.map((msg) => {
           const isMe = msg.senderId === CURRENT_USER_ID;
 
           return (
             <div
-              key={index}
+              key={msg._id}
               className={`flex gap-2 ${
                 isMe ? "justify-end" : "justify-start"
               }`}
@@ -130,7 +141,7 @@ const ChatContainer = () => {
                     isMe ? "rounded-br-none" : "rounded-bl-none"
                   }`}
                 >
-                  {msg.text}
+                  {msg.text || msg.message}
                 </p>
               )}
 

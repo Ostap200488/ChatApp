@@ -19,7 +19,7 @@ export const ChatProvider = ({ children }) => {
     try {
       const { data } = await axios.get("/api/messages/users");
       if (data.success) {
-        setUsers(data.users);
+        setUsers(data.users || []);
         setUnseenMessages(data.unseenMessages || {});
       }
     } catch (error) {
@@ -36,7 +36,7 @@ export const ChatProvider = ({ children }) => {
     try {
       const { data } = await axios.get(`/api/messages/${userId}`);
       if (data.success) {
-        setMessages(data.messages);
+        setMessages(Array.isArray(data.messages) ? data.messages : []);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to load messages");
@@ -47,7 +47,7 @@ export const ChatProvider = ({ children }) => {
      SEND MESSAGE (FIXED)
   ====================== */
   const sendMessage = async (messageData) => {
-    if (!selectedUser?._id) return;
+    if (!selectedUser?._id) return null;
 
     try {
       const { data } = await axios.post(
@@ -55,33 +55,56 @@ export const ChatProvider = ({ children }) => {
         messageData
       );
 
-      if (data.success) {
-        setMessages((prev) => [...prev, data.newMessage]);
-      } else {
-        toast.error(data.message);
+      // ✅ backend might return newMessage OR message
+      const newMsg = data?.newMessage || data?.message;
+
+      if (!data?.success || !newMsg) {
+        toast.error(data?.message || "Message failed");
+        return null;
       }
+
+      // ✅ show instantly for sender
+      setMessages((prev) => [...prev, newMsg].filter(Boolean));
+
+      return newMsg;
     } catch (error) {
       toast.error(error.response?.data?.message || "Message failed");
+      throw error;
     }
   };
 
   /* ======================
-     SOCKET SUBSCRIBE
+     SOCKET SUBSCRIBE (FIXED)
   ====================== */
   useEffect(() => {
     if (!socket) return;
 
     const handleNewMessage = (incomingMessage) => {
-      if (selectedUser && incomingMessage.senderId === selectedUser._id) {
-        const seenMessage = { ...incomingMessage, seen: true };
+      if (!incomingMessage) return;
 
-        setMessages((prev) => [...prev, seenMessage]);
-        axios.put(`/api/messages/mark/${incomingMessage._id}`);
+      // ✅ normalize fields (senderId vs sender, receiverId vs receiver)
+      const senderId = incomingMessage.senderId || incomingMessage.sender;
+      const receiverId =
+        incomingMessage.receiverId || incomingMessage.receiver;
+
+      if (!senderId || !receiverId) return;
+
+      // ✅ if message belongs to open chat, display it
+      if (
+        selectedUser &&
+        (senderId === selectedUser._id || receiverId === selectedUser._id)
+      ) {
+        setMessages((prev) => [...prev, incomingMessage].filter(Boolean));
+
+        // mark as seen (don't crash if fails)
+        axios
+          .put(`/api/messages/mark/${incomingMessage._id}`)
+          .catch(() => {});
       } else {
+        // ✅ update unseen counts safely
         setUnseenMessages((prev) => ({
           ...prev,
-          [incomingMessage.senderId]:
-            (prev[incomingMessage.senderId] || 0) + 1,
+          [senderId]: (prev[senderId] || 0) + 1,
         }));
       }
     };
@@ -106,9 +129,5 @@ export const ChatProvider = ({ children }) => {
     sendMessage,
   };
 
-  return (
-    <ChatContext.Provider value={value}>
-      {children}
-    </ChatContext.Provider>
-  );
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };

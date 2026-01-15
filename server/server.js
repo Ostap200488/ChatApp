@@ -21,6 +21,22 @@ const app = express();
 const server = http.createServer(app);
 
 // =======================
+// MIDDLEWARE (IMPORTANT ORDER)
+// =======================
+app.use(
+  cors({
+    origin: CLIENT_URL,
+    credentials: true,
+  })
+);
+
+// If you send base64 images, 4mb might be too small.
+// Use 10mb (or 20mb) during dev:
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use(cookieParser());
+
+// =======================
 // SOCKET.IO
 // =======================
 export const io = new Server(server, {
@@ -43,23 +59,11 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("User Disconnected:", userId);
-    delete userSocketMap[userId];
+    if (userId) delete userSocketMap[userId];
+
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
-
-// =======================
-// MIDDLEWARE
-// =======================
-app.use(express.json({ limit: "4mb" }));
-app.use(cookieParser());
-
-app.use(
-  cors({
-    origin: CLIENT_URL,
-    credentials: true,
-  })
-);
 
 // =======================
 // ROUTES

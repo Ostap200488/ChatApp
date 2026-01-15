@@ -93,7 +93,7 @@ export const sendMessage = async (req, res) => {
     const newMessage = await Message.create({
       senderId,
       receiverId,
-      text,
+      text: text || "",
       image: imageUrl,
       seen: false, 
     });
