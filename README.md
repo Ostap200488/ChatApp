@@ -9,7 +9,6 @@ This project was designed to simulate a real-world messaging product with clean 
 
 ## 🚀 Live Demo
 
-🔗 Demo: **Coming Soon**  
 📌 GitHub Repository: https://github.com/Ostap200488/ChatApp
 
 ---
