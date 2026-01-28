@@ -56,10 +56,9 @@ This project was designed to simulate a real-world messaging product with clean 
 ## ⚙️ Installation & Setup
 
 ### 1) Clone the repository
-``bash 
+```bash
 git clone https://github.com/Ostap200488/ChatApp.git
 cd ChatApp
-
 
 2) Frontend Setup
 cd client
@@ -78,20 +77,3 @@ npm run dev
 
 Backend usually runs at:
 http://localhost:5001
-
-Environment Variables
-Create a .env file inside the server folder:
-PORT=5001
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-CLIENT_URL=http://localhost:5173
-
-If you use Cloudinary for profile images, also add:
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_key
-CLOUDINARY_API_SECRET=your_secret
-# Author
-Ostap Demchuk
-Junior Software Developer
-Newfoundland & Labrador, Canada
-GitHub: https://github.com/Ostap200488
