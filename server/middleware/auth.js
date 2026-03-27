@@ -17,7 +17,7 @@ export const protectRoute = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const userId = decoded.id || decoded._id; // ✅ FIX
+    const userId = decoded.id || decoded._id;
     if (!userId) {
       return res.status(401).json({
         success: false,

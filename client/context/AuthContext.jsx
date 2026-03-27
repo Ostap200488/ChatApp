@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-// ✅ AXIOS GLOBAL CONFIG
+//  AXIOS GLOBAL CONFIG
 axios.defaults.baseURL = backendUrl;
 axios.defaults.withCredentials = true; // safe even if unused
 
@@ -49,11 +49,11 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      // ✅ SAVE TOKEN
+      // SAVE TOKEN
       localStorage.setItem("token", data.token);
       setToken(data.token);
 
-      // ✅ SET HEADER IMMEDIATELY
+      //  SET HEADER IMMEDIATELY
       axios.defaults.headers.common.Authorization =
         `Bearer ${data.token}`;
 
@@ -89,7 +89,7 @@ const logout = async () => {
     setAuthUser(null);
     setOnlineUsers([]);
 
-    // ✅ REMOVE AUTH HEADER
+    //  REMOVE AUTH HEADER
     delete axios.defaults.headers.common.Authorization;
 
     toast.success("Logged out successfully");

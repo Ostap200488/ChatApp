@@ -13,19 +13,19 @@ const messageSchema = new mongoose.Schema(
       required: true,
     },
 
-    // ✅ TEXT MESSAGE (THIS WAS MISSING)
+    
     text: {
       type: String,
       default: "",
     },
 
-    // optional image message
+    
     image: {
       type: String,
       default: "",
     },
 
-    // ✅ FIX TYPO (seem → seen)
+    
     seen: {
       type: Boolean,
       default: false,

@@ -61,7 +61,7 @@ const ChatContainer = () => {
   useEffect(() => {
     if (!selectedUser?._id) return;
 
-    // ✅ ONLY depends on ID
+   
     getMessages(selectedUser._id);
   }, [selectedUser?._id]);
 

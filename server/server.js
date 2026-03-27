@@ -11,7 +11,7 @@ import { Server } from "socket.io";
 // =======================
 // CONFIG
 // =======================
-const CLIENT_URL = "http://localhost:5173";
+const CLIENT_URL = "http://localhost:5174";
 const PORT = process.env.PORT || 5001;
 
 // =======================

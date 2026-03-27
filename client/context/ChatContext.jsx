@@ -82,26 +82,25 @@ export const ChatProvider = ({ children }) => {
     const handleNewMessage = (incomingMessage) => {
       if (!incomingMessage) return;
 
-      // ✅ normalize fields (senderId vs sender, receiverId vs receiver)
+     
       const senderId = incomingMessage.senderId || incomingMessage.sender;
       const receiverId =
         incomingMessage.receiverId || incomingMessage.receiver;
 
       if (!senderId || !receiverId) return;
 
-      // ✅ if message belongs to open chat, display it
+     
       if (
         selectedUser &&
         (senderId === selectedUser._id || receiverId === selectedUser._id)
       ) {
         setMessages((prev) => [...prev, incomingMessage].filter(Boolean));
 
-        // mark as seen (don't crash if fails)
+        
         axios
           .put(`/api/messages/mark/${incomingMessage._id}`)
           .catch(() => {});
       } else {
-        // ✅ update unseen counts safely
         setUnseenMessages((prev) => ({
           ...prev,
           [senderId]: (prev[senderId] || 0) + 1,
