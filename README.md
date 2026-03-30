@@ -1,4 +1,4 @@
-# 💬 ChatApp — Real-Time Messaging Application
+#  ChatApp — Real-Time Messaging Application
 
 ChatApp is a **full-stack real-time chat application** built to practice and demonstrate modern software development skills as a **Junior Software Developer**.  
 It includes real-time communication, authentication, user profiles, and a modern responsive UI.
@@ -8,24 +8,24 @@ This project was designed to simulate a real-world messaging product with clean 
 ---
 
 
-📌 GitHub Repository: https://github.com/Ostap200488/ChatApp
+ GitHub Repository: https://github.com/Ostap200488/ChatApp
 
 ---
 
-## ✨ Key Features
+#  Key Features
 
-✅ User Authentication (Register / Login)  
-✅ Real-time messaging using **Socket.IO**  
-✅ User profile system (name, bio, profile picture)  
-✅ Database storage for users and chat history  
-✅ Responsive UI for mobile & desktop  
-✅ Clean navigation & smooth user experience  
-✅ Secure backend routes & validation  
-✅ Logout & session handling  
+ User Authentication (Register / Login)  
+ Real-time messaging using **Socket.IO**  
+ User profile system (name, bio, profile picture)  
+ Database storage for users and chat history  
+ Responsive UI for mobile & desktop  
+ Clean navigation & smooth user experience  
+ Secure backend routes & validation  
+ Logout & session handling  
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 ### Frontend
 - React  
@@ -51,7 +51,7 @@ This project was designed to simulate a real-world messaging product with clean 
 
 ---
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 ### 1) Clone the repository
 ```bash
